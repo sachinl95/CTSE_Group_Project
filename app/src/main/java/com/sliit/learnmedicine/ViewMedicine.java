@@ -1,11 +1,17 @@
 package com.sliit.learnmedicine;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
+
+import com.sliit.learnmedicine.DTO.Medicine;
 
 public class ViewMedicine extends AppCompatActivity {
 
@@ -24,6 +30,15 @@ public class ViewMedicine extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Intent intent = this.getIntent();
+        String medicine = intent.getStringExtra("Medicine");
+
+        Activity activity = this;
+        activity.setTitle(medicine);
+        TextView textView = findViewById(R.id.textView);
+        textView.setText(medicine);
+
     }
 
 }
