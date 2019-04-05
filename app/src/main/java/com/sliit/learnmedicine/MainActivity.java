@@ -28,7 +28,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     ListView listView;
-
+    ArrayList<JSONObject> medicineList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String medicine = String.valueOf(parent.getItemAtPosition(position));
-                startActivity(new Intent(getApplicationContext(), ViewMedicine.class).putExtra("Medicine", medicine));
+                try {
+                    String medicineId = medicineList.get(position).getString("id");
+                    startActivity(new Intent(getApplicationContext(), ViewMedicine.class).putExtra("medicineId", medicineId));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Invalid Medicine Object", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -53,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println("REquest Succeeded");
+                        System.out.println("Request Succeeded");
                         try {
                             JSONArray medicinesJsonArray = new JSONArray(response);
                             int medicineCount = medicinesJsonArray.length();
@@ -62,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                                 Object medicineObj = medicinesJsonArray.get(x);
                                 JSONObject medicineJson = new JSONObject(medicineObj.toString());
                                 medicines.add(medicineJson.getString("name"));
+                                medicineList.add(medicineJson);
                             }
 
                             ListAdapter adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, medicines.toArray());
