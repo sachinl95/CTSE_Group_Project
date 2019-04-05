@@ -13,7 +13,9 @@
             android:name=".ViewMedicine"
             android:label="@string/title_activity_view_medicine"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".MainActivity" android:label="Medicine List">
+        <activity
+            android:name=".MainActivity"
+            android:label="Medicine List">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,4 +24,5 @@
         </activity>
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

@@ -8,8 +8,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.sliit.learnmedicine.DTO.Medicine;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,25 +45,44 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String[] foods = {"Mesalazine", "Acetaminophen", "Amoxicillin", "Hydrocodone",
-                "Haldol", "Hytrin", "Hydrochlorothiazide", "Codeine", "Lisinopril", "Adderall", "Acetaminophen",
-                "Oxycodone", "Prednisone"};
+        String url = "https://young-temple-33785.herokuapp.com/medicines/get-all";
 
-        List<Medicine> medicinesList = new ArrayList<>();
-        for (String x : foods) {
-            medicinesList.add(new Medicine(x, "text_desc", "qwe"));
-        }
-        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, foods);
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-        listView.setAdapter(adapter);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        System.out.println("REquest Succeeded");
+                        try {
+                            JSONArray medicinesJsonArray = new JSONArray(response);
+                            int medicineCount = medicinesJsonArray.length();
+                            List<String> medicines = new ArrayList<>();
+                            for (int x = 0; x < medicineCount; x++) {
+                                Object medicineObj = medicinesJsonArray.get(x);
+                                JSONObject medicineJson = new JSONObject(medicineObj.toString());
+                                medicines.add(medicineJson.getString("name"));
+                            }
 
+                            ListAdapter adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, medicines.toArray());
+
+                            listView.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        queue.add(stringRequest);
     }
 
     private void initializeComponents() {
         listView = findViewById(R.id.listView);
     }
 
-    private void getMedicines() {
-
-    }
 }
