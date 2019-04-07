@@ -1,8 +1,12 @@
 package com.sliit.learnmedicine;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,11 +33,18 @@ public class MainActivity extends AppCompatActivity {
 
     ListView listView;
     ArrayList<JSONObject> medicineList = new ArrayList<>();
+    private ActionBar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        toolbar = getSupportActionBar();
+        BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.navigationView);
+
+        bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
 
         initializeComponents();
 
@@ -91,5 +102,27 @@ public class MainActivity extends AppCompatActivity {
     private void initializeComponents() {
         listView = findViewById(R.id.listView);
     }
-
+    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener=
+            new BottomNavigationView.OnNavigationItemReselectedListener() {
+                @Override
+                public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+//                    Fragment fragment;
+                    switch ((menuItem.getItemId())){
+                        case (R.id.navigation_view_medicine_list):
+                            toolbar.setTitle("Medicines");
+                            return;
+                    }
+                    switch ((menuItem.getItemId())){
+                        case (R.id.navigation_view_medicine):
+                            toolbar.setTitle("Medicine List");
+                            return;
+                    }
+                    switch ((menuItem.getItemId())){
+                        case (R.id.navigation_view_help):
+                            toolbar.setTitle("Help");
+                            return;
+                    }
+                    return;
+                }
+            };
 }
