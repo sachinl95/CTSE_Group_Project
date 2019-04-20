@@ -12,6 +12,7 @@
         <activity
             android:name=".ViewMedicine"
             android:label="@string/title_activity_view_medicine"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".MainActivity"
