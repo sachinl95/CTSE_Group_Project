@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = getSupportActionBar();
         BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.navigationView);
 
-        bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
+//        bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
 
         initializeComponents();
 
