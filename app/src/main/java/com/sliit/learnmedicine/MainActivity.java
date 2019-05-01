@@ -35,7 +35,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MedicineListViewFragment.OnFragmentInteractionListener, FavouritesListViewFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements
+        MedicineListViewFragment.OnFragmentInteractionListener,
+        FavouritesListViewFragment.OnFragmentInteractionListener,
+        HelpFragment.OnFragmentInteractionListener {
 
     private ActionBar toolbar;
     private FragmentManager fragmentManager;
@@ -65,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements MedicineListViewF
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch ((menuItem.getItemId())) {
                 case (R.id.navigation_view_medicine_list):
+                    toolbar.setTitle("Medicine List");
+                    Log.i(TAG, "Nav-Medicine List Clicked");
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
                     fragmentTransaction.replace(R.id.main_activity, medicineListViewFragment, "qwe");
@@ -74,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements MedicineListViewF
             switch ((menuItem.getItemId())) {
                 case (R.id.navigation_view_medicine):
                     toolbar.setTitle("Favourites");
+                    Log.i(TAG, "Nav-Fav Clicked");
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     FavouritesListViewFragment favouritesListViewFragment = new FavouritesListViewFragment();
                     fragmentTransaction.replace(R.id.main_activity, favouritesListViewFragment, "qwe");
@@ -84,7 +90,10 @@ public class MainActivity extends AppCompatActivity implements MedicineListViewF
                 case (R.id.navigation_view_help):
                     toolbar.setTitle("Help");
                     Log.i(TAG, "Nav-Help Clicked");
-
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    HelpFragment helpFragment = new HelpFragment();
+                    fragmentTransaction.replace(R.id.main_activity, helpFragment, "qwe");
+                    fragmentTransaction.commitNow();
                     break;
             }
             return true;

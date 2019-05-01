@@ -5,4 +5,18 @@
     <string name="title_activity_view_help">Help</string>
     <string name="title_activity_view_medicine">Medicine</string>
 
+    <string name="help_page">
+        \n
+        Adding a medicine as favorite:\n
+        1. Go to medicine List\n
+        2. Select the medicine you want to add as favorite\n
+        3. Click the heart icon on the bottom right corner\n
+        \n
+        Removing a medicine from favorites:\n
+        1. Go to favorites\n
+        2. Select the medicine you want to remove\n
+        3. Click on the minus button on the bottom right corner\n
+        \n
+    </string>
+
 </resources>
