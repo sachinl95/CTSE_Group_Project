@@ -115,7 +115,7 @@ public class MedicineListViewFragment extends Fragment {
             }
         });
 
-        String url = "https://young-temple-33785.herokuapp.com/medicines/get-all";
+        String url = ApiUrlHelper.GET_ALL_URL;
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
 

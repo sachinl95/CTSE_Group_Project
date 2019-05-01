@@ -4,36 +4,24 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.sliit.learnmedicine.DTO.Medicine;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ViewMedicine extends AppCompatActivity {
 
@@ -63,7 +51,7 @@ public class ViewMedicine extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                addToFavourite(medicineId,true);
+                addToFavourite(medicineId, true);
                 Snackbar.make(view, "Added to Favourites", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -72,21 +60,21 @@ public class ViewMedicine extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                addToFavourite(medicineId,false);
+                addToFavourite(medicineId, false);
                 Snackbar.make(v, "Removed from Favourites", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
         final Activity activity = this;
-        String url = "https://young-temple-33785.herokuapp.com/medicines/get-one/".concat(medicineId);
+        String url = ApiUrlHelper.GET_ONE_URL.concat("/").concat(medicineId);
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.i(TAG,"Request Succeeded");
+                        Log.i(TAG, "Request Succeeded");
                         try {
                             JSONObject medicineDetails = new JSONObject(response);
 
@@ -97,7 +85,7 @@ public class ViewMedicine extends AppCompatActivity {
                             textView.setText(medicineName);
                             TextView descriptionView = findViewById(R.id.descriptionView);
                             descriptionView.setText(medicineDetails.getString("description"));
-                            if(isFavourite) {
+                            if (isFavourite) {
                                 floatingActionButton.setVisibility(View.VISIBLE);
                             }
                         } catch (JSONException e) {
@@ -115,12 +103,11 @@ public class ViewMedicine extends AppCompatActivity {
 
     }
 
-    public void addToFavourite(String medicineId,boolean status){
-        String url = "https://young-temple-33785.herokuapp.com/medicines/updateFavourite/".concat(medicineId)+"/"+status;
+    public void addToFavourite(String medicineId, boolean status) {
+        String url = ApiUrlHelper.UPDATE_FAVORITES_URL.concat("/").concat(medicineId) + "/" + status;
         try {
             StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
-                    new Response.Listener<String>()
-                    {
+                    new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             // response
@@ -129,8 +116,7 @@ public class ViewMedicine extends AppCompatActivity {
                             startActivity(getIntent());
                         }
                     },
-                    new Response.ErrorListener()
-                    {
+                    new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             // error
@@ -145,8 +131,7 @@ public class ViewMedicine extends AppCompatActivity {
             };
 
             queue.add(putRequest);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

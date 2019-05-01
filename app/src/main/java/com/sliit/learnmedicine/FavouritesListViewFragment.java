@@ -121,7 +121,7 @@ public class FavouritesListViewFragment extends Fragment {
                 }
             }
         });
-        String url = "https://young-temple-33785.herokuapp.com/medicines/get-favourites";
+        String url = ApiUrlHelper.GET_FAVORITES_URL;
         RequestQueue queue = Volley.newRequestQueue(getContext());
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
