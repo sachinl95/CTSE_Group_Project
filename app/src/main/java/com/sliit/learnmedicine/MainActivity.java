@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,18 +38,19 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements MedicineListViewFragment.OnFragmentInteractionListener, FavouritesListViewFragment.OnFragmentInteractionListener {
 
     private ActionBar toolbar;
-    FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
+
+    private final static String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.i(TAG, "Started Activity");
 
         toolbar = getSupportActionBar();
-        BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.navigationView);
+        BottomNavigationView bottomNavigation = findViewById(R.id.navigationView);
 
-//        bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
         bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
         fragmentManager = getSupportFragmentManager();
@@ -61,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements MedicineListViewF
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            Fragment fragment;
             switch ((menuItem.getItemId())) {
                 case (R.id.navigation_view_medicine_list):
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements MedicineListViewF
             }
             switch ((menuItem.getItemId())) {
                 case (R.id.navigation_view_medicine):
+                    toolbar.setTitle("Favourites");
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     FavouritesListViewFragment favouritesListViewFragment = new FavouritesListViewFragment();
                     fragmentTransaction.replace(R.id.main_activity, favouritesListViewFragment, "qwe");
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MedicineListViewF
             switch ((menuItem.getItemId())) {
                 case (R.id.navigation_view_help):
                     toolbar.setTitle("Help");
-                    System.out.println("Help Clicked");
+                    Log.i(TAG, "Nav-Help Clicked");
 
                     break;
             }
@@ -89,38 +91,8 @@ public class MainActivity extends AppCompatActivity implements MedicineListViewF
         }
     };
 
-
-//    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener =
-//            new BottomNavigationView.OnNavigationItemReselectedListener() {
-//                @Override
-//                public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-////                    Fragment fragment;
-//                    switch ((menuItem.getItemId())) {
-//                        case (R.id.navigation_view_medicine_list):
-//                            break;
-//                    }
-//                    switch ((menuItem.getItemId())) {
-//                        case (R.id.navigation_view_medicine):
-////                            startActivity(new Intent(getApplicationContext(), FavouritesMedicine.class));
-//                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                            FavouritesListViewFragment favouritesListViewFragment = new FavouritesListViewFragment();
-//                            fragmentTransaction.replace(R.id.main_activity, favouritesListViewFragment, "qwe");
-//                            fragmentTransaction.commitNow();
-//                            break;
-//                    }
-//                    switch ((menuItem.getItemId())) {
-//                        case (R.id.navigation_view_help):
-//                            toolbar.setTitle("Help");
-//                            System.out.println("Help Clicked");
-//
-//                            break;
-//                    }
-//                    return;
-//                }
-//            };
-
     @Override
     public void onFragmentInteraction(Uri uri) {
-        System.out.println("onFragmentInteraction = " + uri);
+        Log.i(TAG, "onFragIntrctin(), Uri=".concat(uri.toString()));
     }
 }

@@ -98,7 +98,7 @@ public class MedicineListViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.i("onViewCreated()", TAG);
+        Log.i(TAG, "onViewCreated()");
         listView = getView().findViewById(R.id.listView);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -123,7 +123,7 @@ public class MedicineListViewFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println("Request Succeeded");
+                        Log.i(TAG,"Request Succeeded");
                         try {
                             JSONArray medicinesJsonArray = new JSONArray(response);
                             int medicineCount = medicinesJsonArray.length();
@@ -162,7 +162,7 @@ public class MedicineListViewFragment extends Fragment {
     @Override
     public void onAttach(final Context context) {
         super.onAttach(context);
-        Log.i("onAttach()", TAG);
+        Log.i(TAG, "onAttach()");
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

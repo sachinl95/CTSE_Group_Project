@@ -41,6 +41,8 @@ public class ViewMedicine extends AppCompatActivity {
     boolean isFavourite;
     FloatingActionButton floatingActionButton;
 
+    private final static String TAG = "ViewMedicine";
+
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,7 @@ public class ViewMedicine extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println("Request Succeeded");
+                        Log.i(TAG,"Request Succeeded");
                         try {
                             JSONObject medicineDetails = new JSONObject(response);
 
