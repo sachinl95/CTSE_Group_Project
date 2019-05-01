@@ -1,8 +1,11 @@
 package com.sliit.learnmedicine;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,10 +33,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MedicineListViewFragment.OnFragmentInteractionListener {
 
-    ListView listView;
-    ArrayList<JSONObject> medicineList = new ArrayList<>();
     private ActionBar toolbar;
 
     @Override
@@ -47,84 +48,41 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
 
-        initializeComponents();
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String medicine = String.valueOf(parent.getItemAtPosition(position));
-                try {
-                    String medicineId = medicineList.get(position).getString("id");
-                    startActivity(new Intent(getApplicationContext(), ViewMedicine.class).putExtra("medicineId", medicineId));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Invalid Medicine Object", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        String url = "https://young-temple-33785.herokuapp.com/medicines/get-all";
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        System.out.println("Request Succeeded");
-                        try {
-                            JSONArray medicinesJsonArray = new JSONArray(response);
-                            int medicineCount = medicinesJsonArray.length();
-                            List<String> medicines = new ArrayList<>();
-                            for (int x = 0; x < medicineCount; x++) {
-                                Object medicineObj = medicinesJsonArray.get(x);
-                                JSONObject medicineJson = new JSONObject(medicineObj.toString());
-                                medicines.add(medicineJson.getString("name"));
-                                medicineList.add(medicineJson);
-                            }
-
-                            ListAdapter adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, medicines.toArray());
-
-                            listView.setAdapter(adapter);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        queue.add(stringRequest);
-
-
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
+        fragmentTransaction.add(R.id.main_activity, medicineListViewFragment, "qwe");
+        fragmentTransaction.commitNow();
     }
 
-    private void initializeComponents() {
-        listView = findViewById(R.id.listView);
-    }
-    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener=
+
+    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener =
             new BottomNavigationView.OnNavigationItemReselectedListener() {
                 @Override
                 public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
 //                    Fragment fragment;
-                    switch ((menuItem.getItemId())){
+                    switch ((menuItem.getItemId())) {
                         case (R.id.navigation_view_medicine_list):
                             break;
                     }
-                    switch ((menuItem.getItemId())){
+                    switch ((menuItem.getItemId())) {
                         case (R.id.navigation_view_medicine):
                             startActivity(new Intent(getApplicationContext(), FavouritesMedicine.class));
                             break;
                     }
-                    switch ((menuItem.getItemId())){
+                    switch ((menuItem.getItemId())) {
                         case (R.id.navigation_view_help):
                             toolbar.setTitle("Help");
+                            System.out.println("Help Clicked");
+
                             break;
                     }
                     return;
                 }
             };
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        System.out.println("onFragmentInteraction = " + uri);
+    }
 }
