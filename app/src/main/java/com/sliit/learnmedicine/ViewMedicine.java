@@ -8,12 +8,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -28,9 +30,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ViewMedicine extends AppCompatActivity {
+
+    RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +46,23 @@ public class ViewMedicine extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent intent = this.getIntent();
+        final String medicineId = intent.getStringExtra("medicineId");
+        queue = Volley.newRequestQueue(this);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            public void onClick(final View view) {
+                addToFavourite(medicineId);
+                Snackbar.make(view, "Added to Favourites", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
-        Intent intent = this.getIntent();
-        String medicineId = intent.getStringExtra("medicineId");
-
-
         final Activity activity = this;
         String url = "https://young-temple-33785.herokuapp.com/medicines/get-one/".concat(medicineId);
 
-        RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -87,6 +92,38 @@ public class ViewMedicine extends AppCompatActivity {
         queue.add(stringRequest);
 
 
+    }
+
+    public void addToFavourite(String medicineId){
+        String url = "https://young-temple-33785.herokuapp.com/medicines/updateFavourite/".concat(medicineId)+"/true";
+        try {
+            StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                    new Response.Listener<String>()
+                    {
+                        @Override
+                        public void onResponse(String response) {
+                            // response
+                            Log.d("Response", response);
+                        }
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // error
+                            Log.d("Error.Response", error.toString());
+                        }
+                    }
+            ) {
+
+
+            };
+
+            queue.add(putRequest);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }
