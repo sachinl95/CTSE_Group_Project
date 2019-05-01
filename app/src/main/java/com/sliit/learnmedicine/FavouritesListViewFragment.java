@@ -52,7 +52,6 @@ public class FavouritesListViewFragment extends Fragment {
     private ListView favouritesListView;
     private ArrayList<JSONObject> favMedicineList = new ArrayList<>();
     RequestQueue queue;
-    private Button retryButton;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -110,7 +109,6 @@ public class FavouritesListViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         favouritesListView = getView().findViewById(R.id.favListView);
-        retryButton = getView().findViewById(R.id.retryBtn);
 
         favouritesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -132,7 +130,6 @@ public class FavouritesListViewFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        retryButton.setVisibility(View.INVISIBLE);
                         Log.i(TAG, "Request Succeeded");
                         try {
                             JSONArray medicinesJsonArray = new JSONArray(response);
@@ -156,14 +153,6 @@ public class FavouritesListViewFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
-                retryButton.setVisibility(View.VISIBLE);
-            }
-        });
-
-        retryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                queue.add(stringRequest);
             }
         });
 

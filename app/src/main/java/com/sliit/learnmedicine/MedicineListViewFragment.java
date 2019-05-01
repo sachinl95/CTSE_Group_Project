@@ -51,7 +51,6 @@ public class MedicineListViewFragment extends Fragment {
 
     private ListView listView;
     private ArrayList<JSONObject> medicineList = new ArrayList<>();
-    private Button retryButton;
 
     RequestQueue queue;
 
@@ -104,7 +103,6 @@ public class MedicineListViewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.i(TAG, "onViewCreated()");
         listView = getView().findViewById(R.id.listView);
-        retryButton = getView().findViewById(R.id.retryBtn);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -128,7 +126,6 @@ public class MedicineListViewFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        retryButton.setVisibility(View.INVISIBLE);
                         Log.i(TAG, "Request Succeeded");
                         try {
                             JSONArray medicinesJsonArray = new JSONArray(response);
@@ -152,14 +149,6 @@ public class MedicineListViewFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
-                retryButton.setVisibility(View.VISIBLE);
-            }
-        });
-
-        retryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                queue.add(stringRequest);
             }
         });
 
