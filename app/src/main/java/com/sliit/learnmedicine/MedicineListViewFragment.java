@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -48,8 +49,11 @@ public class MedicineListViewFragment extends Fragment {
 
     private static final String TAG = "APP-ListFragment";
 
-    ListView listView;
-    ArrayList<JSONObject> medicineList = new ArrayList<>();
+    private ListView listView;
+    private ArrayList<JSONObject> medicineList = new ArrayList<>();
+    private Button retryButton;
+
+    RequestQueue queue;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -100,6 +104,7 @@ public class MedicineListViewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.i(TAG, "onViewCreated()");
         listView = getView().findViewById(R.id.listView);
+        retryButton = getView().findViewById(R.id.retryBtn);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -117,13 +122,14 @@ public class MedicineListViewFragment extends Fragment {
 
         String url = ApiUrlHelper.GET_ALL_URL;
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        queue = Volley.newRequestQueue(getContext());
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.i(TAG,"Request Succeeded");
+                        retryButton.setVisibility(View.INVISIBLE);
+                        Log.i(TAG, "Request Succeeded");
                         try {
                             JSONArray medicinesJsonArray = new JSONArray(response);
                             int medicineCount = medicinesJsonArray.length();
@@ -146,6 +152,14 @@ public class MedicineListViewFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
+                retryButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                queue.add(stringRequest);
             }
         });
 
