@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch ((menuItem.getItemId())) {
                 case (R.id.navigation_view_medicine_list):
+                    toolbar.setTitle("Medicine List");
                     Log.i(TAG, "Nav-Medicine List Clicked");
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
