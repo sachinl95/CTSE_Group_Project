@@ -1,11 +1,16 @@
 package com.sliit.learnmedicine;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,101 +35,64 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MedicineListViewFragment.OnFragmentInteractionListener, FavouritesListViewFragment.OnFragmentInteractionListener {
 
-    ListView listView;
-    ArrayList<JSONObject> medicineList = new ArrayList<>();
     private ActionBar toolbar;
+    private FragmentManager fragmentManager;
+
+    private final static String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.i(TAG, "Started Activity");
 
         toolbar = getSupportActionBar();
-        BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.navigationView);
+        BottomNavigationView bottomNavigation = findViewById(R.id.navigationView);
 
-        bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
+        bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
-        initializeComponents();
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String medicine = String.valueOf(parent.getItemAtPosition(position));
-                try {
-                    String medicineId = medicineList.get(position).getString("id");
-                    startActivity(new Intent(getApplicationContext(), ViewMedicine.class).putExtra("medicineId", medicineId));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Invalid Medicine Object", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        String url = "https://young-temple-33785.herokuapp.com/medicines/get-all";
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        System.out.println("Request Succeeded");
-                        try {
-                            JSONArray medicinesJsonArray = new JSONArray(response);
-                            int medicineCount = medicinesJsonArray.length();
-                            List<String> medicines = new ArrayList<>();
-                            for (int x = 0; x < medicineCount; x++) {
-                                Object medicineObj = medicinesJsonArray.get(x);
-                                JSONObject medicineJson = new JSONObject(medicineObj.toString());
-                                medicines.add(medicineJson.getString("name"));
-                                medicineList.add(medicineJson);
-                            }
-
-                            ListAdapter adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, medicines.toArray());
-
-                            listView.setAdapter(adapter);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        queue.add(stringRequest);
-
-
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
+        fragmentTransaction.add(R.id.main_activity, medicineListViewFragment, "qwe");
+        fragmentTransaction.commitNow();
     }
 
-    private void initializeComponents() {
-        listView = findViewById(R.id.listView);
+    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            switch ((menuItem.getItemId())) {
+                case (R.id.navigation_view_medicine_list):
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
+                    fragmentTransaction.replace(R.id.main_activity, medicineListViewFragment, "qwe");
+                    fragmentTransaction.commitNow();
+                    break;
+            }
+            switch ((menuItem.getItemId())) {
+                case (R.id.navigation_view_medicine):
+                    toolbar.setTitle("Favourites");
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    FavouritesListViewFragment favouritesListViewFragment = new FavouritesListViewFragment();
+                    fragmentTransaction.replace(R.id.main_activity, favouritesListViewFragment, "qwe");
+                    fragmentTransaction.commitNow();
+                    break;
+            }
+            switch ((menuItem.getItemId())) {
+                case (R.id.navigation_view_help):
+                    toolbar.setTitle("Help");
+                    Log.i(TAG, "Nav-Help Clicked");
+
+                    break;
+            }
+            return true;
+        }
+    };
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        Log.i(TAG, "onFragIntrctin(), Uri=".concat(uri.toString()));
     }
-    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener=
-            new BottomNavigationView.OnNavigationItemReselectedListener() {
-                @Override
-                public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-//                    Fragment fragment;
-                    switch ((menuItem.getItemId())){
-                        case (R.id.navigation_view_medicine_list):
-                            break;
-                    }
-                    switch ((menuItem.getItemId())){
-                        case (R.id.navigation_view_medicine):
-                            startActivity(new Intent(getApplicationContext(), FavouritesMedicine.class));
-                            break;
-                    }
-                    switch ((menuItem.getItemId())){
-                        case (R.id.navigation_view_help):
-                            toolbar.setTitle("Help");
-                            break;
-                    }
-                    return;
-                }
-            };
 }

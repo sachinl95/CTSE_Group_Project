@@ -23,10 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".FavouritesMedicine"
-            android:label="Favourites"
-            android:parentActivityName=".MainActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
