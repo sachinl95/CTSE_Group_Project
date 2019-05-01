@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = getSupportActionBar();
         BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.navigationView);
 
-//        bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
+        bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
 
         initializeComponents();
 
@@ -97,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         queue.add(stringRequest);
+
+
     }
 
     private void initializeComponents() {
@@ -109,18 +112,17 @@ public class MainActivity extends AppCompatActivity {
 //                    Fragment fragment;
                     switch ((menuItem.getItemId())){
                         case (R.id.navigation_view_medicine_list):
-                            toolbar.setTitle("Medicines");
-                            return;
+                            break;
                     }
                     switch ((menuItem.getItemId())){
                         case (R.id.navigation_view_medicine):
-                            toolbar.setTitle("Medicine List");
-                            return;
+                            startActivity(new Intent(getApplicationContext(), FavouritesMedicine.class));
+                            break;
                     }
                     switch ((menuItem.getItemId())){
                         case (R.id.navigation_view_help):
                             toolbar.setTitle("Help");
-                            return;
+                            break;
                     }
                     return;
                 }

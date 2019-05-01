@@ -1,5 +1,6 @@
 package com.sliit.learnmedicine;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,13 +38,19 @@ import java.util.Map;
 public class ViewMedicine extends AppCompatActivity {
 
     RequestQueue queue;
+    boolean isFavourite;
+    FloatingActionButton floatingActionButton;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_medicine);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        isFavourite = false;
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fabRem);
+        floatingActionButton.setVisibility(View.INVISIBLE);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = this.getIntent();
@@ -54,8 +61,17 @@ public class ViewMedicine extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                addToFavourite(medicineId);
+                addToFavourite(medicineId,true);
                 Snackbar.make(view, "Added to Favourites", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                addToFavourite(medicineId,false);
+                Snackbar.make(v, "Removed from Favourites", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -73,11 +89,15 @@ public class ViewMedicine extends AppCompatActivity {
                             JSONObject medicineDetails = new JSONObject(response);
 
                             String medicineName = medicineDetails.getString("name");
+                            isFavourite = medicineDetails.getBoolean("favourite");
                             activity.setTitle(medicineName);
                             TextView textView = findViewById(R.id.textView);
                             textView.setText(medicineName);
                             TextView descriptionView = findViewById(R.id.descriptionView);
                             descriptionView.setText(medicineDetails.getString("description"));
+                            if(isFavourite) {
+                                floatingActionButton.setVisibility(View.VISIBLE);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -91,11 +111,10 @@ public class ViewMedicine extends AppCompatActivity {
 
         queue.add(stringRequest);
 
-
     }
 
-    public void addToFavourite(String medicineId){
-        String url = "https://young-temple-33785.herokuapp.com/medicines/updateFavourite/".concat(medicineId)+"/true";
+    public void addToFavourite(String medicineId,boolean status){
+        String url = "https://young-temple-33785.herokuapp.com/medicines/updateFavourite/".concat(medicineId)+"/"+status;
         try {
             StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                     new Response.Listener<String>()
@@ -104,6 +123,8 @@ public class ViewMedicine extends AppCompatActivity {
                         public void onResponse(String response) {
                             // response
                             Log.d("Response", response);
+                            finish();
+                            startActivity(getIntent());
                         }
                     },
                     new Response.ErrorListener()
@@ -112,6 +133,8 @@ public class ViewMedicine extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             // error
                             Log.d("Error.Response", error.toString());
+                            finish();
+                            startActivity(getIntent());
                         }
                     }
             ) {
