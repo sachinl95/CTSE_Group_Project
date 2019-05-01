@@ -80,6 +80,25 @@ public class MedicineDatabaseHelper extends SQLiteOpenHelper {
         return medicineList;
     }
 
+    public Medicine readOne(String id) throws NullPointerException {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = '" + id + "'", null);
+        cursor.moveToNext();
+        if (cursor.isAfterLast()) {
+            throw new NullPointerException();
+        } else {
+            int name = cursor.getColumnIndex("name");
+            int description = cursor.getColumnIndex("description");
+            int favorite = cursor.getColumnIndex("favourite");
+            Medicine medicine = new Medicine();
+            medicine.setId(id);
+            medicine.setName(cursor.getString(name));
+            medicine.setDescription(cursor.getString(description));
+            medicine.setFavourite(cursor.getInt(favorite) > 0);
+            return medicine;
+        }
+    }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {

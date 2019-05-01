@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.sliit.learnmedicine.DTO.Medicine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +29,8 @@ public class ViewMedicine extends AppCompatActivity {
     RequestQueue queue;
     boolean isFavourite;
     FloatingActionButton floatingActionButton;
+    TextView textView;
+    TextView descriptionView;
 
     private final static String TAG = "ViewMedicine";
 
@@ -36,7 +39,11 @@ public class ViewMedicine extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_medicine);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
+        textView = findViewById(R.id.textView);
+        descriptionView = findViewById(R.id.descriptionView);
+
         setSupportActionBar(toolbar);
         isFavourite = false;
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fabRem);
@@ -81,9 +88,7 @@ public class ViewMedicine extends AppCompatActivity {
                             String medicineName = medicineDetails.getString("name");
                             isFavourite = medicineDetails.getBoolean("favourite");
                             activity.setTitle(medicineName);
-                            TextView textView = findViewById(R.id.textView);
                             textView.setText(medicineName);
-                            TextView descriptionView = findViewById(R.id.descriptionView);
                             descriptionView.setText(medicineDetails.getString("description"));
                             if (isFavourite) {
                                 floatingActionButton.setVisibility(View.VISIBLE);
@@ -96,10 +101,28 @@ public class ViewMedicine extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "Failed to retrieve medicine information", Toast.LENGTH_LONG).show();
+                finish();
             }
         });
+        MedicineDatabaseHelper dbHelper = new MedicineDatabaseHelper(this);
+        try {
+            Medicine medicine = dbHelper.readOne(medicineId);
+            String medicineName = medicine.getName();
+            activity.setTitle(medicineName);
+            textView.setText(medicineName);
+            descriptionView = findViewById(R.id.descriptionView);
+            descriptionView.setText(medicine.getDescription());
+            if (medicine.isFavourite()) {
+                floatingActionButton.setVisibility(View.VISIBLE);
+            }
+        } catch (NullPointerException e) {
+            Log.i(TAG, "Null Pointer Exception");
+            queue.add(stringRequest);
+        }
 
-        queue.add(stringRequest);
+    }
+
+    private void setupUI(Medicine medicine) {
 
     }
 
