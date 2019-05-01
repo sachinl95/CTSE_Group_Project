@@ -111,11 +111,11 @@ public class ViewMedicine extends AppCompatActivity {
                     }
                 } catch (NullPointerException e) {
                     Log.i(TAG, "Null Pointer Exception");
+                    finish();
 
                 }
                 Toast.makeText(getApplicationContext(),
                         "Failed to retrieve medicine information", Toast.LENGTH_LONG).show();
-                finish();
             }
         });
         queue.add(stringRequest);
