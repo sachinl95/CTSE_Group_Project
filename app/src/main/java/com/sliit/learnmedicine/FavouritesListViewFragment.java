@@ -52,7 +52,7 @@ public class FavouritesListViewFragment extends Fragment {
 
     private ListView favouritesListView;
     private ArrayList<JSONObject> favMedicineList = new ArrayList<>();
-    private List<Medicine> medicineList;
+    private List<Medicine> medicineList = new ArrayList<>();
     private RequestQueue queue;
 
     // TODO: Rename and change types of parameters
