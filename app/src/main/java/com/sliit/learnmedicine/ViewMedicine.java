@@ -19,15 +19,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.sliit.learnmedicine.DTO.Medicine;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ViewMedicine extends AppCompatActivity {
 
-    RequestQueue queue;
+    private RequestQueue queue;
     boolean isFavourite;
-    FloatingActionButton floatingActionButton;
+    private FloatingActionButton floatingActionButton;
+    private TextView textView;
+    private TextView descriptionView;
 
     private final static String TAG = "ViewMedicine";
 
@@ -36,7 +39,11 @@ public class ViewMedicine extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_medicine);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
+        textView = findViewById(R.id.textView);
+        descriptionView = findViewById(R.id.descriptionView);
+
         setSupportActionBar(toolbar);
         isFavourite = false;
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fabRem);
@@ -51,18 +58,14 @@ public class ViewMedicine extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                addToFavourite(medicineId, true);
-                Snackbar.make(view, "Added to Favourites", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                addToFavourite(medicineId, true, view);
             }
         });
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(final View v) {
-                addToFavourite(medicineId, false);
-                Snackbar.make(v, "Removed from Favourites", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(final View view) {
+                addToFavourite(medicineId, false, view);
             }
         });
 
@@ -81,9 +84,7 @@ public class ViewMedicine extends AppCompatActivity {
                             String medicineName = medicineDetails.getString("name");
                             isFavourite = medicineDetails.getBoolean("favourite");
                             activity.setTitle(medicineName);
-                            TextView textView = findViewById(R.id.textView);
                             textView.setText(medicineName);
-                            TextView descriptionView = findViewById(R.id.descriptionView);
                             descriptionView.setText(medicineDetails.getString("description"));
                             if (isFavourite) {
                                 floatingActionButton.setVisibility(View.VISIBLE);
@@ -95,16 +96,39 @@ public class ViewMedicine extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
+
+                MedicineDatabaseHelper dbHelper =
+                        new MedicineDatabaseHelper(getApplicationContext());
+                try {
+                    Medicine medicine = dbHelper.readOne(medicineId);
+                    String medicineName = medicine.getName();
+                    activity.setTitle(medicineName);
+                    textView.setText(medicineName);
+                    descriptionView = findViewById(R.id.descriptionView);
+                    descriptionView.setText(medicine.getDescription());
+                    if (medicine.isFavourite()) {
+                        floatingActionButton.setVisibility(View.VISIBLE);
+                    }
+                } catch (NullPointerException e) {
+                    Log.i(TAG, "Null Pointer Exception");
+                    finish();
+
+                }
+                Toast.makeText(getApplicationContext(),
+                        "Failed to retrieve medicine information", Toast.LENGTH_LONG).show();
             }
         });
-
         queue.add(stringRequest);
 
     }
 
-    public void addToFavourite(String medicineId, boolean status) {
-        String url = ApiUrlHelper.UPDATE_FAVORITES_URL.concat("/").concat(medicineId) + "/" + status;
+    private void setupUI(Medicine medicine) {
+
+    }
+
+    public void addToFavourite(String medicineId, final boolean status, final View view) {
+        String url = ApiUrlHelper.UPDATE_FAVORITES_URL.concat("/").concat(medicineId) + "/"
+                + status;
         try {
             StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                     new Response.Listener<String>() {
@@ -112,6 +136,15 @@ public class ViewMedicine extends AppCompatActivity {
                         public void onResponse(String response) {
                             // response
                             Log.d("Response", response);
+                            if (status) {
+                                Snackbar.make(view, "Added to Favourites",
+                                        Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            } else {
+                                Snackbar.make(view, "Removed from Favourites",
+                                        Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            }
                             finish();
                             startActivity(getIntent());
                         }
@@ -121,8 +154,9 @@ public class ViewMedicine extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             // error
                             Log.d("Error.Response", error.toString());
-                            finish();
-                            startActivity(getIntent());
+                            Toast.makeText(getApplicationContext(),
+                                    "Couldn't update favourites: Connection Error",
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
             ) {

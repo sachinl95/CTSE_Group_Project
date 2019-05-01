@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -24,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.sliit.learnmedicine.DTO.Medicine;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +50,8 @@ public class MedicineListViewFragment extends Fragment {
     private static final String TAG = "APP-ListFragment";
 
     private ListView listView;
-    private ArrayList<JSONObject> medicineList = new ArrayList<>();
+    private ArrayList<JSONObject> medicineJsonList = new ArrayList<>();
+    private List<Medicine> medicineList = new ArrayList<>();
 
     RequestQueue queue;
 
@@ -108,19 +109,17 @@ public class MedicineListViewFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String medicine = String.valueOf(parent.getItemAtPosition(position));
-                try {
-                    String medicineId = medicineList.get(position).getString("id");
-                    startActivity(new Intent(getContext(), ViewMedicine.class).putExtra("medicineId", medicineId));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "Invalid Medicine Object", Toast.LENGTH_LONG).show();
-                }
+                String medicineId = medicineList.get(position).getId();
+                startActivity(new Intent(getContext(), ViewMedicine.class)
+                        .putExtra("medicineId", medicineId));
             }
         });
 
         String url = ApiUrlHelper.GET_ALL_URL;
 
         queue = Volley.newRequestQueue(getContext());
+
+        final Context context = getContext();
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -135,12 +134,20 @@ public class MedicineListViewFragment extends Fragment {
                                 Object medicineObj = medicinesJsonArray.get(x);
                                 JSONObject medicineJson = new JSONObject(medicineObj.toString());
                                 medicines.add(medicineJson.getString("name"));
-                                medicineList.add(medicineJson);
+                                medicineJsonList.add(medicineJson);
+                                String id = medicineJson.getString("id");
+                                String name = medicineJson.getString("name");
+                                String description = medicineJson.getString("description");
+                                boolean favourite = medicineJson.getBoolean("favourite");
+                                medicineList.add(new Medicine(id, name, description, favourite));
                             }
 
-                            ListAdapter adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, medicines.toArray());
+                            ListAdapter adapter = new ArrayAdapter<>(context,
+                                    android.R.layout.simple_list_item_1, medicines.toArray());
 
                             listView.setAdapter(adapter);
+                            MedicineDatabaseHelper dbHelper = new MedicineDatabaseHelper(context);
+                            dbHelper.saveAll(medicineList);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -148,7 +155,19 @@ public class MedicineListViewFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Failed to retrieve medicines",
+                        Toast.LENGTH_LONG).show();
+                MedicineDatabaseHelper dbHelper = new MedicineDatabaseHelper(context);
+                medicineList = dbHelper.readAll();
+
+                List<String> medicineNames = new ArrayList<>();
+                for (Medicine medicine : medicineList) {
+                    medicineNames.add(medicine.getName());
+                }
+
+                ListAdapter adapter = new ArrayAdapter<>(context,
+                        android.R.layout.simple_list_item_1, medicineNames.toArray());
+                listView.setAdapter(adapter);
             }
         });
 

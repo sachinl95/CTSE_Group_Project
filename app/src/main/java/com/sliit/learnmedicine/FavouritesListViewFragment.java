@@ -24,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.sliit.learnmedicine.DTO.Medicine;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +52,8 @@ public class FavouritesListViewFragment extends Fragment {
 
     private ListView favouritesListView;
     private ArrayList<JSONObject> favMedicineList = new ArrayList<>();
-    RequestQueue queue;
+    private List<Medicine> medicineList = new ArrayList<>();
+    private RequestQueue queue;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -95,7 +97,8 @@ public class FavouritesListViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favourites_list_view, container, false);
+        return inflater.inflate(R.layout.fragment_favourites_list_view, container,
+                false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -114,13 +117,9 @@ public class FavouritesListViewFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String medicine = String.valueOf(parent.getItemAtPosition(position));
-                try {
-                    String medicineId = favMedicineList.get(position).getString("id");
-                    startActivity(new Intent(getContext(), ViewMedicine.class).putExtra("medicineId", medicineId));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "Invalid Medicine Object", Toast.LENGTH_LONG).show();
-                }
+                String medicineId = medicineList.get(position).getId();
+                startActivity(new Intent(getContext(), ViewMedicine.class)
+                        .putExtra("medicineId", medicineId));
             }
         });
         String url = ApiUrlHelper.GET_FAVORITES_URL;
@@ -140,9 +139,15 @@ public class FavouritesListViewFragment extends Fragment {
                                 JSONObject medicineJson = new JSONObject(medicineObj.toString());
                                 medicines.add(medicineJson.getString("name"));
                                 favMedicineList.add(medicineJson);
+                                String id = medicineJson.getString("id");
+                                String name = medicineJson.getString("name");
+                                String description = medicineJson.getString("description");
+                                boolean favourite = medicineJson.getBoolean("favourite");
+                                medicineList.add(new Medicine(id, name, description, favourite));
                             }
 
-                            ListAdapter adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, medicines.toArray());
+                            ListAdapter adapter = new ArrayAdapter<>(getContext(),
+                                    android.R.layout.simple_list_item_1, medicines.toArray());
 
                             favouritesListView.setAdapter(adapter);
                         } catch (JSONException e) {
@@ -152,7 +157,21 @@ public class FavouritesListViewFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Failed to retrieve favourites",
+                        Toast.LENGTH_LONG).show();
+
+                MedicineDatabaseHelper db = new MedicineDatabaseHelper(getContext());
+                medicineList = db.readFavourites();
+
+                List<String> medicineNames = new ArrayList<>();
+                for (Medicine medicine : medicineList) {
+                    medicineNames.add(medicine.getName());
+                }
+
+                ListAdapter adapter = new ArrayAdapter<>(getContext(),
+                        android.R.layout.simple_list_item_1, medicineNames.toArray());
+
+                favouritesListView.setAdapter(adapter);
             }
         });
 
