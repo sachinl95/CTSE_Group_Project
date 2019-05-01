@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,6 +62,31 @@ public class MainActivity extends AppCompatActivity implements
         MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
         fragmentTransaction.add(R.id.main_activity, medicineListViewFragment, "qwe");
         fragmentTransaction.commitNow();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.reloadOption) {
+            List<Fragment> fragments = fragmentManager.getFragments();
+            Log.i(TAG, "fragment count = " + fragments.size());
+            Fragment fragment = fragments.get(0);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(fragment);
+            fragmentTransaction.commitNow();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.main_activity, fragment, "qwe");
+            fragmentTransaction.commitNow();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
