@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Learn Medicine</string>
-    <string name="title_activity_view_medicine">ViewMedicine</string>
+    <string name="title_activity_view_medicine_list">List</string>
+    <string name="title_activity_view_medicine_favourites">Favourites</string>
+    <string name="title_activity_view_help">Help</string>
+    <string name="title_activity_view_medicine">Medicine</string>
 </resources>

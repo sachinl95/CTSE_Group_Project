@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_view_medicine_list"
+        android:icon="@drawable/ic_menu_black_24dp"
+        android:title="@string/title_activity_view_medicine_list" />
+    <item
+    android:id="@+id/navigation_view_medicine"
+    android:icon="@drawable/ic_favorite_black_24dp"
+    android:title="@string/title_activity_view_medicine_favourites" />
+    <item
+        android:id="@+id/navigation_view_help"
+        android:icon="@drawable/ic_help_black_24dp"
+        android:title="@string/title_activity_view_help" />
+</menu>
