@@ -35,6 +35,7 @@ public class FavouritesMedicine extends AppCompatActivity {
     ListView favouritesListView;
     ArrayList<JSONObject> favMedicineList = new ArrayList<>();
     Toolbar toolbar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,19 +44,19 @@ public class FavouritesMedicine extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.favouritesNavigationView);
         bottomNavigationView.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
         initializeComponents();
-         favouritesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-             @Override
-             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                 String medicine = String.valueOf(parent.getItemAtPosition(position));
-                 try {
-                     String medicineId = favMedicineList.get(position).getString("id");
-                     startActivity(new Intent(getApplicationContext(), ViewMedicine.class).putExtra("medicineId", medicineId));
-                 } catch (JSONException e) {
-                     e.printStackTrace();
-                     Toast.makeText(getApplicationContext(), "Invalid Medicine Object", Toast.LENGTH_LONG).show();
-                 }
-             }
-         });
+        favouritesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String medicine = String.valueOf(parent.getItemAtPosition(position));
+                try {
+                    String medicineId = favMedicineList.get(position).getString("id");
+                    startActivity(new Intent(getApplicationContext(), ViewMedicine.class).putExtra("medicineId", medicineId));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Invalid Medicine Object", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         String url = "https://young-temple-33785.herokuapp.com/medicines/get-favourites";
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -95,21 +96,22 @@ public class FavouritesMedicine extends AppCompatActivity {
     private void initializeComponents() {
         favouritesListView = findViewById(R.id.favouritesListView);
     }
-    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener=
+
+    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener =
             new BottomNavigationView.OnNavigationItemReselectedListener() {
                 @Override
                 public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
 //                    Fragment fragment;
-                    switch ((menuItem.getItemId())){
+                    switch ((menuItem.getItemId())) {
                         case (R.id.navigation_view_medicine_list):
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             return;
                     }
-                    switch ((menuItem.getItemId())){
+                    switch ((menuItem.getItemId())) {
                         case (R.id.navigation_view_medicine):
                             return;
                     }
-                    switch ((menuItem.getItemId())){
+                    switch ((menuItem.getItemId())) {
                         case (R.id.navigation_view_help):
                             return;
                     }

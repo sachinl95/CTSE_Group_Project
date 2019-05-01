@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -33,9 +34,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MedicineListViewFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements MedicineListViewFragment.OnFragmentInteractionListener, FavouritesListViewFragment.OnFragmentInteractionListener {
 
     private ActionBar toolbar;
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,40 +48,76 @@ public class MainActivity extends AppCompatActivity implements MedicineListViewF
         toolbar = getSupportActionBar();
         BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.navigationView);
 
-        bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
+//        bottomNavigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
+        bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
         fragmentTransaction.add(R.id.main_activity, medicineListViewFragment, "qwe");
         fragmentTransaction.commitNow();
     }
 
+    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Fragment fragment;
+            switch ((menuItem.getItemId())) {
+                case (R.id.navigation_view_medicine_list):
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
+                    fragmentTransaction.replace(R.id.main_activity, medicineListViewFragment, "qwe");
+                    fragmentTransaction.commitNow();
+                    break;
+            }
+            switch ((menuItem.getItemId())) {
+                case (R.id.navigation_view_medicine):
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    FavouritesListViewFragment favouritesListViewFragment = new FavouritesListViewFragment();
+                    fragmentTransaction.replace(R.id.main_activity, favouritesListViewFragment, "qwe");
+                    fragmentTransaction.commitNow();
+                    break;
+            }
+            switch ((menuItem.getItemId())) {
+                case (R.id.navigation_view_help):
+                    toolbar.setTitle("Help");
+                    System.out.println("Help Clicked");
 
-    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener =
-            new BottomNavigationView.OnNavigationItemReselectedListener() {
-                @Override
-                public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
-//                    Fragment fragment;
-                    switch ((menuItem.getItemId())) {
-                        case (R.id.navigation_view_medicine_list):
-                            break;
-                    }
-                    switch ((menuItem.getItemId())) {
-                        case (R.id.navigation_view_medicine):
-                            startActivity(new Intent(getApplicationContext(), FavouritesMedicine.class));
-                            break;
-                    }
-                    switch ((menuItem.getItemId())) {
-                        case (R.id.navigation_view_help):
-                            toolbar.setTitle("Help");
-                            System.out.println("Help Clicked");
+                    break;
+            }
+            return true;
+        }
+    };
 
-                            break;
-                    }
-                    return;
-                }
-            };
+
+//    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener =
+//            new BottomNavigationView.OnNavigationItemReselectedListener() {
+//                @Override
+//                public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+////                    Fragment fragment;
+//                    switch ((menuItem.getItemId())) {
+//                        case (R.id.navigation_view_medicine_list):
+//                            break;
+//                    }
+//                    switch ((menuItem.getItemId())) {
+//                        case (R.id.navigation_view_medicine):
+////                            startActivity(new Intent(getApplicationContext(), FavouritesMedicine.class));
+//                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                            FavouritesListViewFragment favouritesListViewFragment = new FavouritesListViewFragment();
+//                            fragmentTransaction.replace(R.id.main_activity, favouritesListViewFragment, "qwe");
+//                            fragmentTransaction.commitNow();
+//                            break;
+//                    }
+//                    switch ((menuItem.getItemId())) {
+//                        case (R.id.navigation_view_help):
+//                            toolbar.setTitle("Help");
+//                            System.out.println("Help Clicked");
+//
+//                            break;
+//                    }
+//                    return;
+//                }
+//            };
 
     @Override
     public void onFragmentInteraction(Uri uri) {
