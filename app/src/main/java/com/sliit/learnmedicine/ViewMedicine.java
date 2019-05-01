@@ -26,11 +26,11 @@ import org.json.JSONObject;
 
 public class ViewMedicine extends AppCompatActivity {
 
-    RequestQueue queue;
+    private RequestQueue queue;
     boolean isFavourite;
-    FloatingActionButton floatingActionButton;
-    TextView textView;
-    TextView descriptionView;
+    private FloatingActionButton floatingActionButton;
+    private TextView textView;
+    private TextView descriptionView;
 
     private final static String TAG = "ViewMedicine";
 
@@ -58,18 +58,14 @@ public class ViewMedicine extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                addToFavourite(medicineId, true);
-                Snackbar.make(view, "Added to Favourites", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                addToFavourite(medicineId, true, view);
             }
         });
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(final View v) {
-                addToFavourite(medicineId, false);
-                Snackbar.make(v, "Removed from Favourites", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(final View view) {
+                addToFavourite(medicineId, false, view);
             }
         });
 
@@ -100,25 +96,29 @@ public class ViewMedicine extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Failed to retrieve medicine information", Toast.LENGTH_LONG).show();
+
+                MedicineDatabaseHelper dbHelper =
+                        new MedicineDatabaseHelper(getApplicationContext());
+                try {
+                    Medicine medicine = dbHelper.readOne(medicineId);
+                    String medicineName = medicine.getName();
+                    activity.setTitle(medicineName);
+                    textView.setText(medicineName);
+                    descriptionView = findViewById(R.id.descriptionView);
+                    descriptionView.setText(medicine.getDescription());
+                    if (medicine.isFavourite()) {
+                        floatingActionButton.setVisibility(View.VISIBLE);
+                    }
+                } catch (NullPointerException e) {
+                    Log.i(TAG, "Null Pointer Exception");
+
+                }
+                Toast.makeText(getApplicationContext(),
+                        "Failed to retrieve medicine information", Toast.LENGTH_LONG).show();
                 finish();
             }
         });
-        MedicineDatabaseHelper dbHelper = new MedicineDatabaseHelper(this);
-        try {
-            Medicine medicine = dbHelper.readOne(medicineId);
-            String medicineName = medicine.getName();
-            activity.setTitle(medicineName);
-            textView.setText(medicineName);
-            descriptionView = findViewById(R.id.descriptionView);
-            descriptionView.setText(medicine.getDescription());
-            if (medicine.isFavourite()) {
-                floatingActionButton.setVisibility(View.VISIBLE);
-            }
-        } catch (NullPointerException e) {
-            Log.i(TAG, "Null Pointer Exception");
-            queue.add(stringRequest);
-        }
+        queue.add(stringRequest);
 
     }
 
@@ -126,8 +126,9 @@ public class ViewMedicine extends AppCompatActivity {
 
     }
 
-    public void addToFavourite(String medicineId, boolean status) {
-        String url = ApiUrlHelper.UPDATE_FAVORITES_URL.concat("/").concat(medicineId) + "/" + status;
+    public void addToFavourite(String medicineId, final boolean status, final View view) {
+        String url = ApiUrlHelper.UPDATE_FAVORITES_URL.concat("/").concat(medicineId) + "/"
+                + status;
         try {
             StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                     new Response.Listener<String>() {
@@ -135,6 +136,15 @@ public class ViewMedicine extends AppCompatActivity {
                         public void onResponse(String response) {
                             // response
                             Log.d("Response", response);
+                            if (status) {
+                                Snackbar.make(view, "Added to Favourites",
+                                        Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            } else {
+                                Snackbar.make(view, "Removed from Favourites",
+                                        Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            }
                             finish();
                             startActivity(getIntent());
                         }
@@ -144,8 +154,9 @@ public class ViewMedicine extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             // error
                             Log.d("Error.Response", error.toString());
-                            finish();
-                            startActivity(getIntent());
+                            Toast.makeText(getApplicationContext(),
+                                    "Couldn't update favourites: Connection Error",
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
             ) {

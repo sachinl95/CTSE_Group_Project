@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         if (id == R.id.reloadOption) {
             List<Fragment> fragments = fragmentManager.getFragments();
-            Log.i(TAG, "fragment count = " + fragments.size());
             Fragment fragment = fragments.get(0);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.remove(fragment);
@@ -89,7 +88,8 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch ((menuItem.getItemId())) {
@@ -97,8 +97,10 @@ public class MainActivity extends AppCompatActivity implements
                     toolbar.setTitle("Medicine List");
                     Log.i(TAG, "Nav-Medicine List Clicked");
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
-                    fragmentTransaction.replace(R.id.main_activity, medicineListViewFragment, "qwe");
+                    MedicineListViewFragment medicineListViewFragment =
+                            new MedicineListViewFragment();
+                    fragmentTransaction.replace(R.id.main_activity, medicineListViewFragment,
+                            "qwe");
                     fragmentTransaction.commitNow();
                     break;
             }
@@ -107,8 +109,10 @@ public class MainActivity extends AppCompatActivity implements
                     toolbar.setTitle("Favourites");
                     Log.i(TAG, "Nav-Fav Clicked");
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    FavouritesListViewFragment favouritesListViewFragment = new FavouritesListViewFragment();
-                    fragmentTransaction.replace(R.id.main_activity, favouritesListViewFragment, "qwe");
+                    FavouritesListViewFragment favouritesListViewFragment =
+                            new FavouritesListViewFragment();
+                    fragmentTransaction.replace(R.id.main_activity, favouritesListViewFragment,
+                            "qwe");
                     fragmentTransaction.commitNow();
                     break;
             }

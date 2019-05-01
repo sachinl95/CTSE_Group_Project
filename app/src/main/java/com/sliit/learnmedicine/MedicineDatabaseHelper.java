@@ -80,9 +80,35 @@ public class MedicineDatabaseHelper extends SQLiteOpenHelper {
         return medicineList;
     }
 
+    public List<Medicine> readFavourites() {
+        List<Medicine> medicineList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE favourite > 0",
+                null);
+        cursor.moveToNext();
+        int id = cursor.getColumnIndex("id");
+        int name = cursor.getColumnIndex("name");
+        int description = cursor.getColumnIndex("description");
+        int favorite = cursor.getColumnIndex("favourite");
+        while (!cursor.isAfterLast()) {
+            Medicine medicine = new Medicine();
+            medicine.setId(cursor.getString(id));
+            medicine.setName(cursor.getString(name));
+            medicine.setDescription(cursor.getString(description));
+            medicine.setFavourite(cursor.getInt(favorite) > 0);
+            medicineList.add(medicine);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+
+        return medicineList;
+    }
+
     public Medicine readOne(String id) throws NullPointerException {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = '" + id + "'", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = '" + id + "'",
+                null);
         cursor.moveToNext();
         if (cursor.isAfterLast()) {
             throw new NullPointerException();

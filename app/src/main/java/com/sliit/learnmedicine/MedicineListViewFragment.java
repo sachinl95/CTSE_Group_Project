@@ -110,13 +110,16 @@ public class MedicineListViewFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String medicine = String.valueOf(parent.getItemAtPosition(position));
                 String medicineId = medicineList.get(position).getId();
-                startActivity(new Intent(getContext(), ViewMedicine.class).putExtra("medicineId", medicineId));
+                startActivity(new Intent(getContext(), ViewMedicine.class)
+                        .putExtra("medicineId", medicineId));
             }
         });
 
         String url = ApiUrlHelper.GET_ALL_URL;
 
         queue = Volley.newRequestQueue(getContext());
+
+        final Context context = getContext();
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -139,10 +142,11 @@ public class MedicineListViewFragment extends Fragment {
                                 medicineList.add(new Medicine(id, name, description, favourite));
                             }
 
-                            ListAdapter adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, medicines.toArray());
+                            ListAdapter adapter = new ArrayAdapter<>(context,
+                                    android.R.layout.simple_list_item_1, medicines.toArray());
 
                             listView.setAdapter(adapter);
-                            MedicineDatabaseHelper dbHelper = new MedicineDatabaseHelper(getContext());
+                            MedicineDatabaseHelper dbHelper = new MedicineDatabaseHelper(context);
                             dbHelper.saveAll(medicineList);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -151,8 +155,9 @@ public class MedicineListViewFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "Failed to retrieve medicines", Toast.LENGTH_LONG).show();
-                MedicineDatabaseHelper dbHelper = new MedicineDatabaseHelper(getContext());
+                Toast.makeText(getContext(), "Failed to retrieve medicines",
+                        Toast.LENGTH_LONG).show();
+                MedicineDatabaseHelper dbHelper = new MedicineDatabaseHelper(context);
                 medicineList = dbHelper.readAll();
 
                 List<String> medicineNames = new ArrayList<>();
@@ -160,7 +165,8 @@ public class MedicineListViewFragment extends Fragment {
                     medicineNames.add(medicine.getName());
                 }
 
-                ListAdapter adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, medicineNames.toArray());
+                ListAdapter adapter = new ArrayAdapter<>(context,
+                        android.R.layout.simple_list_item_1, medicineNames.toArray());
                 listView.setAdapter(adapter);
             }
         });
