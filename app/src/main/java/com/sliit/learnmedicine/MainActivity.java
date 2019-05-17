@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
@@ -22,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private ActionBar toolbar;
     private FragmentManager fragmentManager;
+    private FloatingActionButton addButton;
 
     private final static String TAG = "MainActivity";
 
@@ -43,6 +47,14 @@ public class MainActivity extends AppCompatActivity implements
         MedicineListViewFragment medicineListViewFragment = new MedicineListViewFragment();
         fragmentTransaction.add(R.id.main_activity, medicineListViewFragment, "qwe");
         fragmentTransaction.commitNow();
+
+        addButton = findViewById(R.id.addMain);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), AddMedicine.class));
+            }
+        });
     }
 
     @Override
