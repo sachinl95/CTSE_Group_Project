@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.sliit.learnmedicine.DTO.Medicine;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +33,8 @@ public class ViewMedicine extends AppCompatActivity {
     private FloatingActionButton floatingActionButton;
     private TextView textView;
     private TextView descriptionView;
+    private ImageView imageView;
+    private String url = "https://images.pexels.com/photos/415825/pexels-photo-415825.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
 
     private final static String TAG = "ViewMedicine";
 
@@ -48,6 +52,8 @@ public class ViewMedicine extends AppCompatActivity {
         isFavourite = false;
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fabRem);
         floatingActionButton.setVisibility(View.INVISIBLE);
+        imageView = (ImageView) findViewById(R.id.imageView);
+        loadImageFromURL(url);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = this.getIntent();
@@ -168,6 +174,23 @@ public class ViewMedicine extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void loadImageFromURL(String url)
+    {
+        Picasso.with(this).load(url).placeholder(R.mipmap.ic_launcher)
+        .error(R.mipmap.ic_launcher)
+                .into(imageView,new com.squareup.picasso.Callback(){
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
     }
 
 }
