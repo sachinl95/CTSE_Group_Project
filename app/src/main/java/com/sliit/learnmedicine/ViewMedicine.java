@@ -41,7 +41,7 @@ public class ViewMedicine extends AppCompatActivity {
     private TextView textView;
     private TextView descriptionView;
     private ImageView imageView;
-    // private String url = "https://images.pexels.com/photos/415825/pexels-photo-415825.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
+    private String EmptyImageurl = "https://dwsinc.co/wp-content/uploads/2018/05/image-not-found.jpg";
     private String medicineId;
 
     private final static String TAG = "ViewMedicine";
@@ -146,6 +146,10 @@ public class ViewMedicine extends AppCompatActivity {
     }
 
     private void loadImageFromURL(String url) {
+        if(url=="null")
+        {
+            url = this.EmptyImageurl;
+        }
         Picasso.with(this).load(url).placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)
                 .into(imageView, new com.squareup.picasso.Callback() {
