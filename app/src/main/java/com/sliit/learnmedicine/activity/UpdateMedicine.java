@@ -1,4 +1,4 @@
-package com.sliit.learnmedicine;
+package com.sliit.learnmedicine.activity;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -20,7 +19,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.sliit.learnmedicine.DTO.Medicine;
+import com.sliit.learnmedicine.R;
+import com.sliit.learnmedicine.util.ApiUrlHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;

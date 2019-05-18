@@ -1,4 +1,4 @@
-package com.sliit.learnmedicine;
+package com.sliit.learnmedicine.activity;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,13 +18,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.sliit.learnmedicine.R;
+import com.sliit.learnmedicine.util.ApiUrlHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AddMedicine extends AppCompatActivity {
 

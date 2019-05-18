@@ -1,4 +1,4 @@
-package com.sliit.learnmedicine;
+package com.sliit.learnmedicine.fragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,15 +26,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.sliit.learnmedicine.DTO.Medicine;
+import com.sliit.learnmedicine.R;
+import com.sliit.learnmedicine.activity.ViewMedicine;
+import com.sliit.learnmedicine.util.ApiUrlHelper;
+import com.sliit.learnmedicine.util.MedicineDatabaseHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**

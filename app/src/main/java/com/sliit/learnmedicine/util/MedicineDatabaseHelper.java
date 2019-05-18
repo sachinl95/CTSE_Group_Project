@@ -1,4 +1,4 @@
-package com.sliit.learnmedicine;
+package com.sliit.learnmedicine.util;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -16,6 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.sliit.learnmedicine.activity.AddMedicine;
+import com.sliit.learnmedicine.fragment.FavouritesListViewFragment;
+import com.sliit.learnmedicine.fragment.HelpFragment;
+import com.sliit.learnmedicine.fragment.MedicineListViewFragment;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements

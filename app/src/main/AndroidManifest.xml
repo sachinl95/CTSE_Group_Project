@@ -12,13 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher">
         <activity
-            android:name=".UpdateMedicine"
+            android:name=".activity.UpdateMedicine"
             android:theme="@style/AppTheme"></activity>
         <activity
-            android:name=".AddMedicine"
+            android:name=".activity.AddMedicine"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ViewMedicine"
+            android:name=".activity.ViewMedicine"
             android:label="@string/title_activity_view_medicine"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
