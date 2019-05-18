@@ -1,4 +1,4 @@
-package com.sliit.learnmedicine;
+package com.sliit.learnmedicine.util;
 
 public class ApiUrlHelper {
     private static final ApiUrlHelper ourInstance = new ApiUrlHelper();

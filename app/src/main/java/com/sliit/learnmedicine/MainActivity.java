@@ -1,6 +1,5 @@
 package com.sliit.learnmedicine;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -13,6 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.sliit.learnmedicine.fragment.FavouritesListViewFragment;
+import com.sliit.learnmedicine.fragment.HelpFragment;
+import com.sliit.learnmedicine.fragment.MedicineListViewFragment;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements

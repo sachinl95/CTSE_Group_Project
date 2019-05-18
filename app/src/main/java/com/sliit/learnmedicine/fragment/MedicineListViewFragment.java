@@ -1,4 +1,4 @@
-package com.sliit.learnmedicine;
+package com.sliit.learnmedicine.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +23,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.sliit.learnmedicine.ApiUrlHelper;
 import com.sliit.learnmedicine.DTO.Medicine;
+import com.sliit.learnmedicine.MedicineDatabaseHelper;
+import com.sliit.learnmedicine.R;
+import com.sliit.learnmedicine.ViewMedicine;
 
 import org.json.JSONArray;
 import org.json.JSONException;
