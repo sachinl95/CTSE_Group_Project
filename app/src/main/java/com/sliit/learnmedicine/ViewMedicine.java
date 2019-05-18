@@ -42,6 +42,7 @@ public class ViewMedicine extends AppCompatActivity {
     private TextView descriptionView;
     private ImageView imageView;
     private String url = "https://images.pexels.com/photos/415825/pexels-photo-415825.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
+    private String medicineId;
 
     private final static String TAG = "ViewMedicine";
 
@@ -65,6 +66,7 @@ public class ViewMedicine extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = this.getIntent();
         final String medicineId = intent.getStringExtra("medicineId");
+        this.medicineId = medicineId;
         queue = Volley.newRequestQueue(this);
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -82,56 +84,8 @@ public class ViewMedicine extends AppCompatActivity {
             }
         });
 
-        final Activity activity = this;
-        String url = ApiUrlHelper.GET_ONE_URL.concat("/").concat(medicineId);
 
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i(TAG, "Request Succeeded");
-                        try {
-                            JSONObject medicineDetails = new JSONObject(response);
-
-                            String medicineName = medicineDetails.getString("name");
-                            isFavourite = medicineDetails.getBoolean("favourite");
-                            activity.setTitle(medicineName);
-                            textView.setText(medicineName);
-                            descriptionView.setText(medicineDetails.getString("description"));
-                            if (isFavourite) {
-                                floatingActionButton.setVisibility(View.VISIBLE);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                MedicineDatabaseHelper dbHelper =
-                        new MedicineDatabaseHelper(getApplicationContext());
-                try {
-                    Medicine medicine = dbHelper.readOne(medicineId);
-                    String medicineName = medicine.getName();
-                    activity.setTitle(medicineName);
-                    textView.setText(medicineName);
-                    descriptionView = findViewById(R.id.descriptionView);
-                    descriptionView.setText(medicine.getDescription());
-                    if (medicine.isFavourite()) {
-                        floatingActionButton.setVisibility(View.VISIBLE);
-                    }
-                } catch (NullPointerException e) {
-                    Log.i(TAG, "Null Pointer Exception");
-                    finish();
-
-                }
-                Toast.makeText(getApplicationContext(),
-                        "Failed to retrieve medicine information", Toast.LENGTH_LONG).show();
-            }
-        });
-        queue.add(stringRequest);
+        getMedicineDataAndDisplay();
 
     }
 
@@ -210,9 +164,71 @@ public class ViewMedicine extends AppCompatActivity {
 
         int id = item.getItemId();
         if (id == R.id.editOption) {
-            startActivity(new Intent(this, UpdateMedicine.class));
+            Intent intent = new Intent(this, UpdateMedicine.class);
+            intent.putExtra("medicineId", medicineId);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getMedicineDataAndDisplay() {
+        String url = ApiUrlHelper.GET_ONE_URL.concat("/").concat(medicineId);
+        final Activity activity = this;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i(TAG, "Request Succeeded");
+                        try {
+                            JSONObject medicineDetails = new JSONObject(response);
+
+
+                            String medicineName = medicineDetails.getString("name");
+                            isFavourite = medicineDetails.getBoolean("favourite");
+                            activity.setTitle(medicineName);
+                            textView.setText(medicineName);
+                            descriptionView.setText(medicineDetails.getString("description"));
+                            if (isFavourite) {
+                                floatingActionButton.show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                MedicineDatabaseHelper dbHelper =
+                        new MedicineDatabaseHelper(getApplicationContext());
+                try {
+                    Medicine medicine = dbHelper.readOne(medicineId);
+                    String medicineName = medicine.getName();
+                    activity.setTitle(medicineName);
+                    textView.setText(medicineName);
+                    descriptionView = findViewById(R.id.descriptionView);
+                    descriptionView.setText(medicine.getDescription());
+                    if (medicine.isFavourite()) {
+                        floatingActionButton.show();
+                    }
+                } catch (NullPointerException e) {
+                    Log.i(TAG, "Null Pointer Exception");
+                    finish();
+
+                }
+                Toast.makeText(getApplicationContext(),
+                        "Failed to retrieve medicine information", Toast.LENGTH_LONG).show();
+            }
+        });
+        queue.add(stringRequest);
+    }
+
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        getMedicineDataAndDisplay();
     }
 }
