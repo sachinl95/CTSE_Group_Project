@@ -71,6 +71,7 @@ public class UpdateMedicine extends AppCompatActivity {
                             String medicineName = medicineDetails.getString("name");
                             nameTxtView.setText(medicineName);
                             descriptionTxtView.setText(medicineDetails.getString("description"));
+                            urlTxtView.setText(medicineDetails.getString("imageURL"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -110,7 +111,7 @@ public class UpdateMedicine extends AppCompatActivity {
             jsonBody.put("description", description);
             if (!imageUrl.trim().equals("")) {
                 if (Patterns.WEB_URL.matcher(imageUrl).matches()) {
-                    jsonBody.put("imageUrl", imageUrl);
+                    jsonBody.put("imageURL", imageUrl);
                 } else {
                     Toast.makeText(getApplicationContext(), "Invalid Image URL", Toast.LENGTH_LONG).show();
                     return;
@@ -120,6 +121,7 @@ public class UpdateMedicine extends AppCompatActivity {
             exc.printStackTrace();
         }
         final String mRequestBody = jsonBody.toString();
+        Log.i(TAG, "JSON Body ".concat(mRequestBody));
 
         String url = ApiUrlHelper.UPDATE_MEDICINE.concat("/").concat(medicineId);
         StringRequest request = new StringRequest(Request.Method.PUT, url,

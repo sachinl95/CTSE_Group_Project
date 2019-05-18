@@ -3,6 +3,7 @@ package com.sliit.learnmedicine;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddMedicine extends AppCompatActivity {
+
+    private final static String TAG = "AddMedicineActivity";
 
     private Button addButton;
     private TextView nameTxtView, descriptionTxtView, imageUrlTxtView;
@@ -57,7 +60,7 @@ public class AddMedicine extends AppCompatActivity {
                     jsonBody.put("description", description);
                     if (!imageUrl.trim().equals("")) {
                         if (Patterns.WEB_URL.matcher(imageUrl).matches()) {
-                            jsonBody.put("imageUrl", imageUrl);
+                            jsonBody.put("imageURL", imageUrl);
                         } else {
                             Toast.makeText(getApplicationContext(), "Invalid Image URL", Toast.LENGTH_LONG).show();
                             return;
@@ -67,6 +70,7 @@ public class AddMedicine extends AppCompatActivity {
                     exc.printStackTrace();
                 }
                 final String mRequestBody = jsonBody.toString();
+                Log.i(TAG, "JSON Body ".concat(mRequestBody));
 
                 String url = ApiUrlHelper.ADD_MEDICINE;
                 StringRequest request = new StringRequest(Request.Method.POST, url,
