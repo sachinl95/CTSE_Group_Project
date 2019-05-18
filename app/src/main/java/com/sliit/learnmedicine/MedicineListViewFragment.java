@@ -170,6 +170,12 @@ public class MedicineListViewFragment extends Fragment {
         refreshList();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshList();
+    }
+
     private void refreshList() {
         final Context context = getContext();
 
