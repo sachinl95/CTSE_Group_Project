@@ -11,6 +11,7 @@ public class ApiUrlHelper {
     public static final String UPDATE_FAVORITES_URL = URL.concat("/updateFavourite");
     public static final String ADD_MEDICINE = URL.concat("/add");
     public static final String DELETE_MEDICINE = URL.concat("/delete");
+    public static final String UPDATE_MEDICINE = URL.concat("/update");
 
     public static ApiUrlHelper getInstance() {
         return ourInstance;
