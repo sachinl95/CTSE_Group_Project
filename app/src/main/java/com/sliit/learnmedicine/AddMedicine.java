@@ -54,6 +54,12 @@ public class AddMedicine extends AppCompatActivity {
                 final String description = descriptionTxtView.getText().toString();
                 final String imageUrl = imageUrlTxtView.getText().toString();
 
+                if(name.length()<1||description.length()<1||imageUrl.length()<1)
+                {
+                    Toast.makeText(getApplicationContext(), "Fields Cannot Be Empty", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 JSONObject jsonBody = new JSONObject();
                 try {
                     jsonBody.put("name", name);
