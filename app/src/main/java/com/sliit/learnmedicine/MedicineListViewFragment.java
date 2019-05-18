@@ -177,6 +177,7 @@ public class MedicineListViewFragment extends Fragment {
     }
 
     private void refreshList() {
+        medicineList.clear();
         final Context context = getContext();
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, ApiUrlHelper.GET_ALL_URL,
