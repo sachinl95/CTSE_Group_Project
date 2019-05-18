@@ -2,6 +2,7 @@ package com.sliit.learnmedicine;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,7 +27,7 @@ import java.util.Map;
 public class AddMedicine extends AppCompatActivity {
 
     private Button addButton;
-    private TextView nameTxtView, descriptionTxtView;
+    private TextView nameTxtView, descriptionTxtView, imageUrlTxtView;
     private RequestQueue queue;
 
     @Override
@@ -37,17 +38,27 @@ public class AddMedicine extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         nameTxtView = findViewById(R.id.nameTxt);
         descriptionTxtView = findViewById(R.id.descriptionTxt);
+        imageUrlTxtView = findViewById(R.id.imageUrlTxt);
         addButton = findViewById(R.id.addMedicineBtn);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String name = nameTxtView.getText().toString();
                 final String description = descriptionTxtView.getText().toString();
+                final String imageUrl = imageUrlTxtView.getText().toString();
 
                 JSONObject jsonBody = new JSONObject();
                 try {
                     jsonBody.put("name", name);
                     jsonBody.put("description", description);
+                    if (!imageUrl.trim().equals("")) {
+                        if (Patterns.WEB_URL.matcher(imageUrl).matches()) {
+                            jsonBody.put("imageUrl", imageUrl);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Invalid Image URL", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
                 } catch (JSONException exc) {
                     exc.printStackTrace();
                 }
