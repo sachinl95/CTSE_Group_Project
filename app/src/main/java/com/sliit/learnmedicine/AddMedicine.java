@@ -73,6 +73,7 @@ public class AddMedicine extends AppCompatActivity {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
+                                Toast.makeText(getApplicationContext(), "Medicine has been added", Toast.LENGTH_LONG).show();
                                 finish();
                             }
                         },
