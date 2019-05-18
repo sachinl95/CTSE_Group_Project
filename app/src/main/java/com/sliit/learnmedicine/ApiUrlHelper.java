@@ -9,6 +9,7 @@ public class ApiUrlHelper {
     public static final String GET_ONE_URL = URL.concat("/get-one/");
     public static final String GET_FAVORITES_URL = URL.concat("/get-favourites");
     public static final String UPDATE_FAVORITES_URL = URL.concat("/updateFavourite");
+    public static final String ADD_MEDICINE = URL.concat("/add");
 
     public static ApiUrlHelper getInstance() {
         return ourInstance;
