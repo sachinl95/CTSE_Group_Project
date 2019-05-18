@@ -41,7 +41,7 @@ public class ViewMedicine extends AppCompatActivity {
     private TextView textView;
     private TextView descriptionView;
     private ImageView imageView;
-    private String url = "https://images.pexels.com/photos/415825/pexels-photo-415825.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
+    // private String url = "https://images.pexels.com/photos/415825/pexels-photo-415825.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
     private String medicineId;
 
     private final static String TAG = "ViewMedicine";
@@ -61,7 +61,7 @@ public class ViewMedicine extends AppCompatActivity {
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fabRem);
         floatingActionButton.setVisibility(View.INVISIBLE);
         imageView = (ImageView) findViewById(R.id.imageView);
-        loadImageFromURL(url);
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = this.getIntent();
@@ -112,8 +112,16 @@ public class ViewMedicine extends AppCompatActivity {
                                         Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show();
                             }
-                            finish();
-                            startActivity(getIntent());
+                            new android.os.Handler().postDelayed(
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            finish();
+                                            startActivity(getIntent());
+                                        }
+                                    },
+                           1000 );
+
                         }
                     },
                     new Response.ErrorListener() {
@@ -189,6 +197,8 @@ public class ViewMedicine extends AppCompatActivity {
                             isFavourite = medicineDetails.getBoolean("favourite");
                             activity.setTitle(medicineName);
                             textView.setText(medicineName);
+                            String url = medicineDetails.getString("imageURL");
+                            loadImageFromURL(url);
                             descriptionView.setText(medicineDetails.getString("description"));
                             if (isFavourite) {
                                 floatingActionButton.show();
