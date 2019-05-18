@@ -1,6 +1,8 @@
 package com.sliit.learnmedicine;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,7 +32,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -112,6 +116,52 @@ public class MedicineListViewFragment extends Fragment {
                 String medicineId = medicineList.get(position).getId();
                 startActivity(new Intent(getContext(), ViewMedicine.class)
                         .putExtra("medicineId", medicineId));
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                Log.i(TAG, "Long Click");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        final Medicine medicine = medicineList.get(position);
+
+                        StringRequest request = new StringRequest(Request.Method.DELETE, ApiUrlHelper.DELETE_MEDICINE.concat("/").concat(medicine.getId()), new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+
+                                Toast.makeText(getContext(), medicine.getName().concat(" Deleted"), Toast.LENGTH_LONG).show();
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getContext(), "Error Occured", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                        queue.add(request);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+
+                    }
+                });
+
+                builder.setMessage("Are you sure want to delete the selected medicine?")
+                        .setTitle("Confirm Delete");
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return true;
             }
         });
 
