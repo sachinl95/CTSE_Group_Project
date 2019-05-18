@@ -1,5 +1,8 @@
 package com.sliit.learnmedicine.util;
 
+/**
+ * Contains the API URLs in one place for easier access and management
+ */
 public class ApiUrlHelper {
     private static final ApiUrlHelper ourInstance = new ApiUrlHelper();
 

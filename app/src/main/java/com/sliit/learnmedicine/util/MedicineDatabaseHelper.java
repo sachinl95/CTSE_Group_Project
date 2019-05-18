@@ -12,6 +12,9 @@ import com.sliit.learnmedicine.DTO.Medicine;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains all the Database related methods to ease reading and writing to the Sql Lite database
+ */
 public class MedicineDatabaseHelper extends SQLiteOpenHelper {
 
     private final static String TAG = "DB Helper";
@@ -19,6 +22,11 @@ public class MedicineDatabaseHelper extends SQLiteOpenHelper {
     private final static String DB_NAME = "medicine.db";
     private final static String TABLE_NAME = "medicines";
 
+    /**
+     * Create the medicines table if it does not exist
+     *
+     * @param context
+     */
     public MedicineDatabaseHelper(Context context) {
         super(context.getApplicationContext(), DB_NAME, null, 1);
         SQLiteDatabase db = this.getWritableDatabase();
@@ -31,6 +39,12 @@ public class MedicineDatabaseHelper extends SQLiteOpenHelper {
                 ")");
     }
 
+    /**
+     * Saves one medicine record (Not Currently Used: Was implemented expecting it to be needed but
+     * was actually not)
+     *
+     * @param medicine
+     */
     public void saveOne(Medicine medicine) {
         ContentValues cv = new ContentValues();
         cv.put("id", medicine.getId());
@@ -42,6 +56,11 @@ public class MedicineDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Saves a list of medicines in the database (Clears the table first to prevent conflicts)
+     *
+     * @param medicineList List of medicine objects
+     */
     public void saveAll(List<Medicine> medicineList) {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME);
@@ -57,6 +76,11 @@ public class MedicineDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Reads and returns all medicine records currently stored in the database
+     *
+     * @return List of Medicine Objects
+     */
     public List<Medicine> readAll() {
         List<Medicine> medicineList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -80,6 +104,11 @@ public class MedicineDatabaseHelper extends SQLiteOpenHelper {
         return medicineList;
     }
 
+    /**
+     * Reads all medicines marked as favorite and returns them
+     *
+     * @return List of Medicines marked as favorite
+     */
     public List<Medicine> readFavourites() {
         List<Medicine> medicineList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -105,6 +134,13 @@ public class MedicineDatabaseHelper extends SQLiteOpenHelper {
         return medicineList;
     }
 
+    /**
+     * Reads one medicine record
+     *
+     * @param id the unique ID of the medicine
+     * @return Medicine Object containing all its information
+     * @throws NullPointerException Is thrown if the medicine does not exist
+     */
     public Medicine readOne(String id) throws NullPointerException {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = '" + id + "'",

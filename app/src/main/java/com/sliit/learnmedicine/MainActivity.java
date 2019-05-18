@@ -23,6 +23,9 @@ import com.sliit.learnmedicine.fragment.MedicineListViewFragment;
 
 import java.util.List;
 
+/**
+ * This is the launch activity
+ */
 public class MainActivity extends AppCompatActivity implements
         MedicineListViewFragment.OnFragmentInteractionListener,
         FavouritesListViewFragment.OnFragmentInteractionListener,
@@ -34,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private final static String TAG = "MainActivity";
 
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
@@ -62,12 +68,25 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    /**
+     * Set the menu to the toolbar on the top-right
+     *
+     * @param menu The layout of the menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
     }
 
+    /**
+     * Called when an option in the toolbar menu is selected
+     * This method reloads the currently selected fragment which in turn reloads the data
+     *
+     * @param item the selected/clicked item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -86,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Loads the selected fragment (Replaces the current one with the new one)
+     */
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override

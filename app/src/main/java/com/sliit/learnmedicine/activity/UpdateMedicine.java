@@ -27,6 +27,9 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+/**
+ * This class contains the logic of the Update Medicine Screen
+ */
 public class UpdateMedicine extends AppCompatActivity {
 
     private final static String TAG = "UpdateMedicineActivity";
@@ -36,6 +39,9 @@ public class UpdateMedicine extends AppCompatActivity {
     private RequestQueue queue;
     private String medicineId;
 
+    /**
+     * Initialize UI elements - Find all the UI elements
+     */
     private void initialize() {
         updateButton = findViewById(R.id.updateMedicineBtn);
         nameTxtView = findViewById(R.id.nameTxt);
@@ -43,7 +49,15 @@ public class UpdateMedicine extends AppCompatActivity {
         urlTxtView = findViewById(R.id.imageUrlTxt);
     }
 
-
+    /**
+     * 1 - Get Medicine ID from the intent
+     * 2 - Create HTTP Request
+     * 3 - Add Request to queue
+     * 4 - Get response data and set them to text views
+     * 5 - Set the Update Button Click Listener
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,14 +113,19 @@ public class UpdateMedicine extends AppCompatActivity {
         });
     }
 
+    /**
+     * 1 - Get the data from the text views
+     * 2 - Create JSON Body with the data
+     * 3 - Create HTTP Request with data
+     * 4 - Add request to the queue
+     */
     private void update() {
 
         final String name = nameTxtView.getText().toString();
         final String description = descriptionTxtView.getText().toString();
         final String imageUrl = urlTxtView.getText().toString();
 
-        if(name.length()<1||description.length()<1||imageUrl.length()<1)
-        {
+        if (name.length() < 1 || description.length() < 1 || imageUrl.length() < 1) {
             Toast.makeText(getApplicationContext(), "Fields Cannot Be Empty", Toast.LENGTH_LONG).show();
             return;
         }
