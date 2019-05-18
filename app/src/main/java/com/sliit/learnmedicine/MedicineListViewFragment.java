@@ -135,13 +135,13 @@ public class MedicineListViewFragment extends Fragment {
                         StringRequest request = new StringRequest(Request.Method.DELETE, ApiUrlHelper.DELETE_MEDICINE.concat("/").concat(medicine.getId()), new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-
+                                refreshList();
                                 Toast.makeText(getContext(), medicine.getName().concat(" Deleted"), Toast.LENGTH_LONG).show();
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(getContext(), "Error Occured", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "Error Occurred", Toast.LENGTH_LONG).show();
                             }
                         });
 
@@ -165,13 +165,15 @@ public class MedicineListViewFragment extends Fragment {
             }
         });
 
-        String url = ApiUrlHelper.GET_ALL_URL;
-
         queue = Volley.newRequestQueue(getContext());
 
+        refreshList();
+    }
+
+    private void refreshList() {
         final Context context = getContext();
 
-        final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        final StringRequest stringRequest = new StringRequest(Request.Method.GET, ApiUrlHelper.GET_ALL_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
