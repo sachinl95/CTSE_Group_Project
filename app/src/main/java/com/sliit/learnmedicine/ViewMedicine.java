@@ -6,9 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +30,8 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class ViewMedicine extends AppCompatActivity {
 
@@ -176,11 +183,10 @@ public class ViewMedicine extends AppCompatActivity {
         }
     }
 
-    private void loadImageFromURL(String url)
-    {
+    private void loadImageFromURL(String url) {
         Picasso.with(this).load(url).placeholder(R.mipmap.ic_launcher)
-        .error(R.mipmap.ic_launcher)
-                .into(imageView,new com.squareup.picasso.Callback(){
+                .error(R.mipmap.ic_launcher)
+                .into(imageView, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess() {
 
@@ -193,4 +199,20 @@ public class ViewMedicine extends AppCompatActivity {
                 });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.view_options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.editOption) {
+            startActivity(new Intent(this, UpdateMedicine.class));
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

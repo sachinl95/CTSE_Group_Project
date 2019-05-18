@@ -1,5 +1,6 @@
 package com.sliit.learnmedicine;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -34,6 +35,9 @@ public class AddMedicine extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medicine);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Add New Medicine");
 
         queue = Volley.newRequestQueue(this);
         nameTxtView = findViewById(R.id.nameTxt);
