@@ -99,58 +99,64 @@ public class FavouritesListViewFragment extends Fragment {
         });
         String url = ApiUrlHelper.GET_FAVORITES_URL;
         queue = Volley.newRequestQueue(getContext());
+        try {
+            final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i(TAG, "Request Succeeded");
+                            try {
+                                JSONArray medicinesJsonArray = new JSONArray(response);
+                                int medicineCount = medicinesJsonArray.length();
+                                List<String> medicines = new ArrayList<>();
+                                for (int x = 0; x < medicineCount; x++) {
+                                    Object medicineObj = medicinesJsonArray.get(x);
+                                    JSONObject medicineJson = new JSONObject(medicineObj.toString());
+                                    medicines.add(medicineJson.getString("name"));
+                                    favMedicineList.add(medicineJson);
+                                    String id = medicineJson.getString("id");
+                                    String name = medicineJson.getString("name");
+                                    String description = medicineJson.getString("description");
+                                    boolean favourite = medicineJson.getBoolean("favourite");
+                                    medicineList.add(new Medicine(id, name, description, favourite));
+                                }
 
-        final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i(TAG, "Request Succeeded");
-                        try {
-                            JSONArray medicinesJsonArray = new JSONArray(response);
-                            int medicineCount = medicinesJsonArray.length();
-                            List<String> medicines = new ArrayList<>();
-                            for (int x = 0; x < medicineCount; x++) {
-                                Object medicineObj = medicinesJsonArray.get(x);
-                                JSONObject medicineJson = new JSONObject(medicineObj.toString());
-                                medicines.add(medicineJson.getString("name"));
-                                favMedicineList.add(medicineJson);
-                                String id = medicineJson.getString("id");
-                                String name = medicineJson.getString("name");
-                                String description = medicineJson.getString("description");
-                                boolean favourite = medicineJson.getBoolean("favourite");
-                                medicineList.add(new Medicine(id, name, description, favourite));
+                                ListAdapter adapter = new ArrayAdapter<>(getContext(),
+                                        android.R.layout.simple_list_item_1, medicines.toArray());
+
+                                favouritesListView.setAdapter(adapter);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            ListAdapter adapter = new ArrayAdapter<>(getContext(),
-                                    android.R.layout.simple_list_item_1, medicines.toArray());
-
-                            favouritesListView.setAdapter(adapter);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getContext(), "Failed to retrieve favourites",
+                            Toast.LENGTH_LONG).show();
+
+                    MedicineDatabaseHelper db = new MedicineDatabaseHelper(getContext());
+                    medicineList = db.readFavourites();
+
+                    List<String> medicineNames = new ArrayList<>();
+                    for (Medicine medicine : medicineList) {
+                        medicineNames.add(medicine.getName());
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "Failed to retrieve favourites",
-                        Toast.LENGTH_LONG).show();
 
-                MedicineDatabaseHelper db = new MedicineDatabaseHelper(getContext());
-                medicineList = db.readFavourites();
+                    ListAdapter adapter = new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_list_item_1, medicineNames.toArray());
 
-                List<String> medicineNames = new ArrayList<>();
-                for (Medicine medicine : medicineList) {
-                    medicineNames.add(medicine.getName());
+                    favouritesListView.setAdapter(adapter);
                 }
+            });
 
-                ListAdapter adapter = new ArrayAdapter<>(getContext(),
-                        android.R.layout.simple_list_item_1, medicineNames.toArray());
-
-                favouritesListView.setAdapter(adapter);
-            }
-        });
-
-        queue.add(stringRequest);
+            queue.add(stringRequest);
+        }
+        catch (Exception ex)
+        {
+            Toast.makeText(getContext(), "Failed to retrieve favourites",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
